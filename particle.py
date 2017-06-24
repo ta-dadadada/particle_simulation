@@ -10,7 +10,7 @@ import numpy.random as rnd
 
 
 class Particle:
-    def __init__(self, patrticle_num=1, dim_num=3):
+    def __init__(self, patrticle_num=1, dim_num=2):
         self.num = patrticle_num
         self.position = np.zeros([patrticle_num, dim_num])
         self.velocity = np.zeros([patrticle_num, dim_num])
@@ -19,12 +19,18 @@ class Particle:
         return self.position
 
     def put_positon(self, new_position):
+        if self.position.shape != new_position.shape:
+            print("put position: 入力が不正のためスキップ")
+            return
         self.position = new_position
 
     def get_velocity(self):
         return self.velocity
 
     def put_velocity(self, new_velocity):
+        if self.velocity.shape != new_velocity.shape:
+            print("put velocity: 入力が不正のためスキップ")
+            return
         self.velocity = new_velocity
 
 
