@@ -12,8 +12,6 @@ def _update_plot(i, fig, im):
         im[0].remove()
         im.pop()
 
-    x =
-
     im.append(plt.scatter(math.cos(rad), math.sin(rad)))
 
 fig =  plt.figure()
