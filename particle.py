@@ -20,7 +20,7 @@ class Particle:
 
     def put_positon(self, new_position):
         if self.position.shape != new_position.shape:
-            print("put position: 入力が不正のためスキップ")
+            print("put position: 入力が不正のためスキップ", self.position.shape, new_position.shape)
             return
         self.position = new_position
 
@@ -29,7 +29,7 @@ class Particle:
 
     def put_velocity(self, new_velocity):
         if self.velocity.shape != new_velocity.shape:
-            print("put velocity: 入力が不正のためスキップ")
+            print("put velocity: 入力が不正のためスキップ", self.velocity.shape, new_velocity.shape)
             return
         self.velocity = new_velocity
 

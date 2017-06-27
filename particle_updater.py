@@ -6,12 +6,19 @@ import numpy as np
 import numpy.random as rnd
 
 from particle import Particle
+from force import *
 
 
 class ParticleUpdater:
+    dt = 0.1
+
     @staticmethod
     def update(particle):
         raise NotImplementedError()
+
+    @staticmethod
+    def set_dt(dt):
+        ParticleUpdater.dt = dt
 
 
 class ParticleRandomizer(ParticleUpdater):
@@ -51,8 +58,50 @@ class ParticleRandomInitializer(ParticleUpdater):
 
 class ParticlePromoter(ParticleUpdater):
     dt = 0.1
+
     @staticmethod
     def update(particle):
+        new_position = particle.get_position() + particle.get_velocity() * ParticlePromoter.dt
+        particle.put_positon(new_position)
+        PeriodicBound.update(particle)
+
+
+class EulerUpdater(ParticleUpdater):
+
+    @staticmethod
+    def update(particle):
+        f = SorfcoreForce.calc(particle)
+        old_velocity = particle.get_velocity()
+        new_velocity = old_velocity + f
+        new_position = particle.get_position() + particle.get_velocity() * ParticlePromoter.dt
+        particle.put_positon(new_position)
+        PeriodicBound.update(particle)
+
+
+class EulerUpdaterWithLoss(ParticleUpdater):
+    loss_rate = 0.4
+
+    @staticmethod
+    def update(particle):
+        f = SorfcoreForce.calc(particle)
+        old_velocity = particle.get_velocity()
+        new_velocity = old_velocity + f - EulerUpdaterWithLoss.loss_rate * old_velocity
+        #Sprint("old", old_velocity, "new", new_velocity)
+        particle.put_velocity(new_velocity)
+        new_position = particle.get_position() + particle.get_velocity() * ParticlePromoter.dt
+        particle.put_positon(new_position)
+        PeriodicBound.update(particle)
+
+class LangevinUpdater(ParticleUpdater):
+    loss_rate = 0.4
+
+    @staticmethod
+    def update(particle):
+        f = SorfcoreForce.calc(particle)
+        old_velocity = particle.get_velocity()
+        new_velocity = old_velocity + f - EulerUpdaterWithLoss.loss_rate * old_velocity + rnd.normal(scale=0.01, size=old_velocity.shape)
+        #Sprint("old", old_velocity, "new", new_velocity)
+        particle.put_velocity(new_velocity)
         new_position = particle.get_position() + particle.get_velocity() * ParticlePromoter.dt
         particle.put_positon(new_position)
         PeriodicBound.update(particle)
